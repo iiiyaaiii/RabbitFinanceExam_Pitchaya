@@ -1,0 +1,26 @@
+{
+  "name": "rabbitfinanceexam_pitchaya",
+  "version": "1.0.0",
+  "description": "QA Automation Exam",
+  "main": "index.js",
+  "dependencies": {
+    "cypress": "^7.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "cypress:run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iiiyaaiii/RabbitFinanceExam_Pitchaya.git"
+  },
+  "keywords": [
+    "cypress:open"
+  ],
+  "author": "Pitchaya Ketnirun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iiiyaaiii/RabbitFinanceExam_Pitchaya/issues"
+  },
+  "homepage": "https://github.com/iiiyaaiii/RabbitFinanceExam_Pitchaya#readme"
+}
