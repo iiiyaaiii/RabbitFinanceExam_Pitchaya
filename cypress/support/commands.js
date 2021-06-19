@@ -10,24 +10,6 @@
 //
 //
 // -- This is a parent command --
-Cypress.Commands.add('POSTAuthorization', (username, password) => {
-  cy.log(`Logging in as ${username}`)
-  cy.request({
-    method: 'POST',
-    url: Cypress.env('api_env') +'/auth',
-    headers: {
-      'accept': 'application/json'
-    },
-    body: {
-      username: username,
-      password: password
-    }
-  }).then((response) => {
-      Cypress.env('user_token',response.body.access_token)
-      expect(response.status).to.equal(200)
-  })
-})
-
 Cypress.Commands.add('Check_And_Clear_Order', (table_no) => {
     let tableNo = table_no
     cy.log('Check Order of Table: ' + tableNo)
@@ -78,7 +60,7 @@ Cypress.Commands.add('Verify_Order', (order_body) => {
       let orders = response.body
       for(let i = 0; i < n ; i++) {
         if (orders[i].Table_No == tableNo) {
-            cy.log('Verify order: ' + orders[i].Order_ID)
+            //cy.log('Verify order: ' + orders[i].Order_ID)
             expect(orders[i].Crust).to.equal(order_body.Crust)
             expect(orders[i].Flavor).to.equal(order_body.Flavor)
             expect(orders[i].Size).to.equal(order_body.Size)
