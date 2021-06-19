@@ -8,7 +8,11 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "cypress:run"
+    "build": "next build",
+    "cy:citest": "start-server-and-test start http://localhost:3000 cy:run",
+    "cy:run": "cypress run",
+    "dev": "next",
+    "start": "next start"
   },
   "repository": {
     "type": "git",
