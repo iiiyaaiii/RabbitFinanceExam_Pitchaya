@@ -1,9 +1,9 @@
 // Part1_AutomateUITesting.js created with Cypress
-describe('User select health insurances', function() {
+describe('User select health insurances and fill in details', function() {
   it('User select Personal Accident and fill in all details succesfully', function() {
      cy.visit(Cypress.env('staging_env') )
      cy.get('#product_category > :nth-child(2) > .row > :nth-child(3)').click()//Click Personal Accident
-     cy.get('#product_accident_subcategory > :nth-child(2) > .row > :nth-child(4)').click()//Click 
+     cy.get('#product_accident_subcategory > :nth-child(2) > .row > :nth-child(4)').click()//Click
      cy.get('#customer_phone > .form-group > .row > :nth-child(2)').type(Cypress.env('customer_phone'))
      cy.get('#customer_phone > :nth-child(2) > .col-12 > .btn').click() //#custermer-phone NEXT btn
      cy.get('#customer_first_name > .row > :nth-child(2').type(Cypress.env('customer_first_name'))

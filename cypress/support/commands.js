@@ -10,16 +10,84 @@
 //
 //
 // -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add('POSTAuthorization', (username, password) => {
+  cy.log(`Logging in as ${username}`)
+  cy.request({
+    method: 'POST',
+    url: Cypress.env('api_env') +'/auth',
+    headers: {
+      'accept': 'application/json',
+    },
+    body: {
+      username: username,
+      password: password
+    }
+  }).as('loginResponse')
+    .then((response) => {
+      //cy.log(response.body.access_token)
+      Cypress.env('user_token',response.body.access_token)
+      return response
+  }).its('status')
+    .should('eq',200)
+})
+
+Cypress.Commands.add('Check_And_Clear_Order', (table_no) => {
+    let tableNo = table_no
+    cy.log('Check Order of Table: ' + tableNo)
+    cy.request({
+      method: 'GET',
+      url: Cypress.env('api_env') +'/orders'
+    }).then(response => {
+      assert.equal(response.status,200)
+      let n = response.body.length
+      let orders = response.body
+      //cy.log(n)
+      for(let i = 0; i < n ; i++) {
+        if (orders[i].Table_No == tableNo) {
+            cy.log('Call to delete Order_ID: ' + orders[i].Order_ID + '  Table_No: ' + orders[i].Table_No)
+            cy.Delete_Order(orders[i].Order_ID)
+          } /*else {
+            cy.log('Cleared! No Order found for the request table')
+          }*/
+      }
+    })
+})
+
+Cypress.Commands.add('Delete_Order', (order_id) => {
+    let orderID = order_id
+    //cy.log(order_id)
+    cy.request({
+      method: 'DELETE',
+      url: Cypress.env('api_env') +'/orders/'+ orderID,//DELETE Order_ID
+      headers: {
+        'accept': 'application/json'
+      }
+    }).as('Order')
+      cy.get('@Order').should((response) => {
+      assert.equal(response.status,200)
+    })
+    cy.log('Deleted Order_ID: '+ orderID + ' successful')
+})
+
+Cypress.Commands.add('Verify_Order', (order_body) => {
+    let tableNo = order_body.Table_No
+    cy.log('Check Order of Table: ' + tableNo)
+    cy.request({
+      method: 'GET',
+      url: Cypress.env('api_env') +'/orders'
+    }).then(response => {
+      assert.equal(response.status,200)
+      let n = response.body.length
+      let orders = response.body
+      for(let i = 0; i < n ; i++) {
+        if (orders[i].Table_No == tableNo) {
+            cy.log('Verify order: ' + orders[i].Order_ID)
+            expect(orders[i].Crust).to.equal(order_body.Crust)
+            expect(orders[i].Flavor).to.equal(order_body.Flavor)
+            expect(orders[i].Size).to.equal(order_body.Size)
+          } /*else {
+            cy.log('---Not found Order of Table: ' + tableNo)
+          }*/
+      }
+    })
+})

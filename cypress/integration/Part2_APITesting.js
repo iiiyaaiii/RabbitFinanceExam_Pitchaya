@@ -1,69 +1,42 @@
 // Part2_APITesting.js created with Cypress
-describe('POST User', function() {
-  it('POST User success', function() {
-    cy.request({
-      method: 'POST',
-      url: Cypress.env('api_env') +'/auth',
-      headers: {
-        'accept': 'application/json',
-        'access_token': 'string'//input Token
-      },
-      body: {
-        username: "userapi1",
-        password:  "psswdapi1"
-      }
-    })
-      .its('status')
-      .should('equal',200)
-      })
-})
-
-describe('Get Orders', function() {
-  it('Get all Orders', function() {
-    cy.request({
-      method: 'GET',
-      url: Cypress.env('api_env') +'/orders'
-    }).as('Orders')
-    cy.get('@Orders').should((response) => {
-      assert.equal(response.status,200)
-      expect(response.body).to.not.be.null
-    })
-  })
-})
-
-describe('POST Orders', function() {
-  it('POST Orders success', function() {
+describe('Manage Order', function(access_token) {
+  it('POST Order success', function() {
+    cy.POSTAuthorization(Cypress.env('auth_username'),Cypress.env('auth_password'))
+    const token = Cypress.env('user_token');
+    let crust = Math.floor((Math.random() * 2))//random crust "NORMAL","THIN"
+    let flavor = Math.floor((Math.random() * 4))//random flavor "CHEESE","CHICKEN-FAJITA","BEEF-NORMAL","HAWAIIAN"
+    let size = Math.floor((Math.random() * 3))//random size "S","M","L"
+    let table = Math.floor((Math.random() * 10) +1)//random table no.1 to 10
+    Cypress.env('table_no',table)
+    let timestamp = new Date().toISOString()//Get current timestamp
+    cy.log('POST order of Table no.' + Cypress.env('table_no') + '\n Pizza: '
+              + Cypress.env('pizza_crust')[crust] + ' '
+              + Cypress.env('pizza_flavor')[flavor] + ' size '
+              + Cypress.env('pizza_size')[size])
+    const order_body = {
+     "Crust": Cypress.env('pizza_crust')[crust],
+     "Flavor": Cypress.env('pizza_flavor')[flavor],
+     "Size": Cypress.env('pizza_size')[size],
+     "Table_No": table,
+     "Timestamp": timestamp
+   }
+    //call Clear Order fn.
+    cy.Check_And_Clear_Order(Cypress.env('table_no'))
     cy.request({
       method: 'POST',
       url: Cypress.env('api_env') +'/orders',
       headers: {
         'accept': 'application/json',
-        'order': "string"//input Token
+        'Authorization': 'Bearer '+ token
       },
-      body:{
-       "Crust": "NORMAL",
-       "Flavor": "CHEESE",
-       "Size": "M",
-       "Table_No": 6,
-       "Timestamp": "2021-06-18T18:21:08.708470"
-      }
-    })
-      .its('status')
-      .should('equal',200)
-      })
-})
-
-describe('Delete Order', function() {
-  it('DELETE Order fail', function() {
-    cy.request({
-      method: 'DELETE',
-      url: Cypress.env('api_env') +'/orders/1',//DELETE Order_ID 1
-      headers: {
-        'accept': 'application/json'
-      }
-    }).as('Order')
-      cy.get('@Order').should((response) => {
-      assert.equal(response.status,200)
-    })
+     body: order_body
+    }).its('status')
+    .should('eq',201)
+    cy.Verify_Order(order_body)
   })
+
+    it('Delete Orders of the table success', function() {
+      cy.Check_And_Clear_Order(Cypress.env('table_no'))
+    })
+
 })
