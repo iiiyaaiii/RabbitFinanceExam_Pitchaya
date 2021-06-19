@@ -16,19 +16,16 @@ Cypress.Commands.add('POSTAuthorization', (username, password) => {
     method: 'POST',
     url: Cypress.env('api_env') +'/auth',
     headers: {
-      'accept': 'application/json',
+      'accept': 'application/json'
     },
     body: {
       username: username,
       password: password
     }
-  }).as('loginResponse')
-    .then((response) => {
-      //cy.log(response.body.access_token)
+  }).then((response) => {
       Cypress.env('user_token',response.body.access_token)
-      return response
-  }).its('status')
-    .should('eq',200)
+      expect(response.status).to.equal(200)
+  })
 })
 
 Cypress.Commands.add('Check_And_Clear_Order', (table_no) => {

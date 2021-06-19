@@ -2,7 +2,9 @@
 describe('Manage Order', function(access_token) {
   it('POST Order success', function() {
     cy.POSTAuthorization(Cypress.env('auth_username'),Cypress.env('auth_password'))
-    const token = Cypress.env('user_token');
+    //cy.log('Token: ' + Cypress.env('user_token'))
+    const token = Cypress.env('user_token')
+    //const token = Cypress.env('user_token');
     let crust = Math.floor((Math.random() * 2))//random crust "NORMAL","THIN"
     let flavor = Math.floor((Math.random() * 4))//random flavor "CHEESE","CHICKEN-FAJITA","BEEF-NORMAL","HAWAIIAN"
     let size = Math.floor((Math.random() * 3))//random size "S","M","L"
